@@ -9,7 +9,7 @@ from helpers import (list_recently_updated_questions,
 
 def write_questions_meta(verbose, write_all):
     MER_URL = 'http://wiki.ubc.ca/Science:Math_Exam_Resources'
-    WHERE_TO_SAVE = 'questions_meta.csv'
+    WHERE_TO_SAVE = 'summary_data/questions_meta.csv'
 
     def get_all_courses():
         connection = urllib.urlopen(MER_URL)
@@ -167,7 +167,7 @@ def write_questions_topic(verbose):
 
 def write_exam_pdf_url(verbose):
     try:
-        df = pd.read_csv('questions_meta.csv')
+        df = pd.read_csv('summary_data/questions_meta.csv')
     except IOError:
         raise AssertionError("""Must first create questions_meta.csv by
                              calling this function with --meta flag""")

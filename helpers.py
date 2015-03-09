@@ -20,10 +20,10 @@ def list_recently_updated_questions():
 
 def delete_recent_questions_in_meta():
     to_remove = list_recently_updated_questions()
-    with open("questions_meta.csv", "r") as f:
+    with open("summary_data/questions_meta.csv", "r") as f:
         lines = f.readlines()
 
-    with open("questions_meta.csv", "w") as f:
+    with open("summary_data/questions_meta.csv", "w") as f:
         for line in lines:
             q_name = line.split(',')[0].replace('http://wiki.ubc.ca', '')
             if q_name not in to_remove:

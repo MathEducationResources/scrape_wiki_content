@@ -1,0 +1,1 @@
+This folder contains summary and meta data about MER.
