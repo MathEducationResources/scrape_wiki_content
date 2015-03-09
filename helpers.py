@@ -37,3 +37,87 @@ def url2questionID(url):
     url = url.strip()
     course, exam, question = url.split('/')[-3:]
     return "UBC+%s+%s+%s" % (course, exam, question.replace("Question_", ""))
+
+import re
+
+
+def brackets_check(text):
+    def check(text, brackets_counter):
+        if brackets_counter < 0:
+            return False
+        if len(text) == 0:
+            return 0 == brackets_counter
+        rest = text[1:]
+        if text[0] == '{':
+            return check(rest, brackets_counter + 1)
+        elif text[0] == '}':
+            return check(rest, brackets_counter - 1)
+        else:
+            return check(rest, brackets_counter)
+    text = text.replace('\{', '').replace('\}', '')
+    text = re.sub(r'[^{}]', '', text)
+    return check(text, 0)
+
+
+def beginend_check(text):
+    def check(text, beginend_counter):
+        if beginend_counter < 0:
+            return False
+        if len(text) == 0:
+            return 0 == beginend_counter
+        rest = text[1:]
+        if text[:6] == 'begin{':
+            return check(rest, beginend_counter + 1)
+        elif text[:4] == 'end{':
+            return check(rest, beginend_counter - 1)
+        else:
+            return check(rest, beginend_counter)
+    return check(text, 0)
+
+
+def split_at_equal(text):
+    def combine(text_list, acc):
+        if len(text_list) == 0:
+            return acc
+        head = text_list[0]
+        rest_list = text_list[1:]
+        if brackets_check(head) and beginend_check(head):
+            return combine(rest_list, acc + [head])
+        combined_first = [head + '=' + rest_list[0]] + rest_list[1:]
+        return combine(combined_first, acc)
+
+    if not brackets_check(text) or not beginend_check(text):
+        raise Exception("text not well formatted %s" % text)
+    return combine(text.split('='), list())
+
+
+def split_at_nextline(text):
+    def combine(text_list, acc):
+        if len(text_list) == 0:
+            return acc
+        head = text_list[0]
+        rest_list = text_list[1:]
+        if brackets_check(head) and beginend_check(head):
+            return combine(rest_list, acc + [head])
+        combined_first = [head + '\\\\' + rest_list[0]] + rest_list[1:]
+        return combine(combined_first, acc)
+
+    if not brackets_check(text) or not beginend_check(text):
+        raise Exception("text not well formatted %s" % text)
+    return combine(text.split('\\\\'), list())
+
+
+def split_at_dot(text):
+    def combine(text_list, acc):
+        if len(text_list) == 0:
+            return acc
+        head = text_list[0]
+        rest_list = text_list[1:]
+        if brackets_check(head) and beginend_check(head):
+            return combine(rest_list, acc + [head])
+        combined_first = [head + '. ' + rest_list[0]] + rest_list[1:]
+        return combine(combined_first, acc)
+
+    if not brackets_check(text) or not beginend_check(text):
+        raise Exception("text not well formatted %s" % text)
+    return combine(text.split(' .'), list())
