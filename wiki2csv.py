@@ -149,7 +149,7 @@ def write_questions_topic(verbose):
         questionLinks = list(set(questionLinks))
         return questionLinks, parent
 
-    WHERE_TO_SAVE = 'questions_topic.csv'
+    WHERE_TO_SAVE = 'summary_data/questions_topic.csv'
     topics = ['http://wiki.ubc.ca' + t for t in get_all_topics()]
 
     with open(WHERE_TO_SAVE, 'w') as f:
@@ -166,6 +166,8 @@ def write_questions_topic(verbose):
 
 
 def write_exam_pdf_url(verbose):
+    WHERE_TO_SAVE = 'summary_data/exam_pdf_url.csv'
+
     try:
         df = pd.read_csv('summary_data/questions_meta.csv')
     except IOError:
@@ -194,13 +196,11 @@ def write_exam_pdf_url(verbose):
                 list_exam_url.append(link.strip())
                 counter = counter + 1
 
-    where_to_save = 'exam_pdf_url.csv'
-    f = open(where_to_save, 'w')
-    f.write('examURL,course,exam\n')
-    for zahl in range(len(list_exam)):
-        f.write('%s,%s,%s\n' %
-                (list_exam_url[zahl], list_course[zahl], list_exam[zahl]))
-    f.close()
+    with open(WHERE_TO_SAVE, 'w') as f:
+        f.write('examURL,course,exam\n')
+        for zahl in range(len(list_exam)):
+            f.write('%s,%s,%s\n' %
+                    (list_exam_url[zahl], list_course[zahl], list_exam[zahl]))
 
 
 if __name__ == "__main__":
