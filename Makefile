@@ -8,7 +8,7 @@ all:
 ## clean: remove all intermediate files: csv and json
 clean:
 
-.PHONY: all, clean, all_json
+.PHONY: all, clean, all_json, add_latex
 
 ## summary_data/questions_meta.csv: csv with meta data (URL,course,exam,question,num_hints,num_sols). Optional: ARGS="--verbose --write_all"
 summary_data/questions_meta.csv: wiki2csv.py helpers.py
@@ -29,7 +29,10 @@ summary_data/exam_pdf_url.csv: wiki2csv.py helpers.py summary_data/questions_met
 raw_json: wiki2json.py helpers.py summary_data/questions_meta.csv
 	python $< $(ARGS)
 
-## backup_mongodb: backs up production mongodb
+## add_latex: compiles raw mediawiki version to latex
+add_latex: raw2latex.py 
+	python $<
+
+## backup_mongodb: backs up production mongodb (currently not working on mongodb 3.x)
 backup_mongodb:
 	today=`date '+%Y_%m_%d_%H_%M_%S'`; out="./backup_$$today"; export $$(cat prod.env); mongodump -v --host $$MONGOLAB_HOST --db $$MONGOLAB_DB --username $$MONGOLAB_USERNAME --password $$MONGOLAB_PASSWORD --out ./$$out
-
