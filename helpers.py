@@ -28,3 +28,12 @@ def delete_recent_questions_in_meta():
             q_name = line.split(',')[0].replace('http://wiki.ubc.ca', '')
             if q_name not in to_remove:
                 f.write(line)
+
+
+def url2questionID(url):
+    ''' Returns unique questionID from UBC wiki URL.
+    Hence currently only works for UBC.
+    '''
+    url = url.strip()
+    course, exam, question = url.split('/')[-3:]
+    return "UBC+%s+%s+%s" % (course, exam, question.replace("Question_", ""))

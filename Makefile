@@ -8,7 +8,7 @@ all:
 ## clean: remove all intermediate files: csv and json
 clean:
 
-.PHONY: all, clean
+.PHONY: all, clean, all_json
 .DELETE_ON_ERROR:
 .SECONDARY:
 
@@ -22,3 +22,7 @@ summary_data/questions_meta.csv: wiki2csv.py
 ## summary_data/questions_topic.csv: csv with topics and parent topics for each question. Optional: ARGS="--verbose"
 summary_data/questions_topic.csv: wiki2csv.py summary_data/questions_meta.csv
 	python $< --topic $(ARGS)
+
+## raw_json: scrape raw content from UBC wiki Optional: ARGS="--write_all --filter=..."
+raw_json: wiki2json.py summary_data/questions_meta.csv
+	python $< $(ARGS)
