@@ -307,9 +307,8 @@ def make_raw_2_latex(df):
     for index, row in df.iterrows():
         loc = row.location
 
-        fd = open(loc, 'r')
-        data = json.loads(fd.read())
-        fd.close()
+        with open(loc, 'r') as fd:
+            data = json.loads(fd.read())
 
         statement_raw = data['statement_raw']
         hints_raw = data['hints_raw']
@@ -363,7 +362,7 @@ if __name__ == '__main__':
         courses = df.groupby('course').groups.keys()
         print(
             'No course specified. Updating all following courses in parallel.')
-        print(courses)
+        print(sorted(courses))
         subprocess.check_output(
             ['parallel', 'python', 'raw2latex.py',
              '--course', ':::'] + courses)

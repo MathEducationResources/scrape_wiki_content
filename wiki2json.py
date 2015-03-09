@@ -94,6 +94,7 @@ def grab_raw(df):
                 hint = get_content(
                     url, 'Hint_%s' % (i + 1))
                 handleImages(hint, loc)
+                hints_raw.append(hint)
         else:
             hints_raw.append('No content found.')
         hints_raw = [h.strip() for h in hints_raw]
@@ -129,7 +130,7 @@ def grab_raw(df):
         if not os.path.exists(where_to_save.split('/Question')[0]):
             os.makedirs(where_to_save.split('/Question')[0])
         with open(where_to_save, "w") as outfile:
-            json.dump(question_json, outfile, indent=4)
+            json.dump(question_json, outfile, indent=4, sort_keys=True)
 
 
 if __name__ == '__main__':
