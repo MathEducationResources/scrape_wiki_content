@@ -18,7 +18,7 @@ summary_data/questions_meta.csv: wiki2csv.py helpers.py
 	mv summary_data/questions_meta_temp.csv summary_data/questions_meta.csv
 
 ## summary_data/questions_topic.csv: csv with topics and parent topics for each question. Optional: ARGS="--verbose"
-summary_data/questions_topic.csv: wiki2csv.py helpers.py summary_data/questions_meta.csv
+summary_data/questions_topic.csv: wiki2csv.py helpers.py
 	python $< --topic $(ARGS)
 
 ## summary_data/exam_pdf_url.csv: csv with url of each exam. Optional: ARGS="--verbose"
