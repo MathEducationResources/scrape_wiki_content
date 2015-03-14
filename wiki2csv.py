@@ -122,19 +122,25 @@ def write_questions_meta(verbose, write_all):
 
 def write_questions_topic(verbose):
     def get_all_topics():
-        MER_URL = 'http://wiki.ubc.ca/Science:Math_Exam_Resources'
+        MER_URL = 'http://wiki.ubc.ca/Science:MER/Lists/Popular_tags'
         connection = urllib.urlopen(MER_URL)
         dom = lxml.html.fromstring(connection.read())
         searchText = 'MER_Tag_'
         topicLinks = []
         for link in dom.xpath('//a/@href'):  # url in href for tags (are links)
             if searchText in link:
+                if not 'Category' in link:
+                    # Fixing an error in the wiki where 'Category:' is missing
+                    link = link.replace(
+                        'wiki.ubc.ca/MER_Tag', 'wiki.ubc.ca/Category:MER_Tag')
                 topicLinks.append(link)
         topicLinks = list(set(topicLinks))
         topicLinks.sort()
         return topicLinks
 
     def get_questionURLs_parent_from_topicURL(topicURL):
+        topicURL = topicURL.replace('http://wiki.ubc.cahttp://wiki.ubc.ca',
+                                    'http://wiki.ubc.ca')
         connection = urllib.urlopen(topicURL)
         dom = lxml.html.fromstring(connection.read())
         searchText = '/Question'
@@ -150,10 +156,10 @@ def write_questions_topic(verbose):
         return questionLinks, parent
 
     WHERE_TO_SAVE = 'summary_data/questions_topic.csv'
-    topics = ['http://wiki.ubc.ca' + t for t in get_all_topics()]
+    topics = get_all_topics()
 
     with open(WHERE_TO_SAVE, 'w') as f:
-        f.write('URL,topic,parent\n')
+        f.write('parent,topic,URL\n')
         for topic in topics:
             questions, parent = get_questionURLs_parent_from_topicURL(topic)
             topic_human = topic.replace(
@@ -161,8 +167,9 @@ def write_questions_topic(verbose):
             if verbose:
                 print(topic_human)
             for q in questions:
-                f.write('%s,%s,%s\n' % ('http://wiki.ubc.ca' + q,
-                                        topic_human, parent))
+                f.write('%s,%s,%s\n' % (parent, topic_human,
+                                        'http://wiki.ubc.ca' + q)
+                        )
 
 
 def write_exam_pdf_url(verbose):

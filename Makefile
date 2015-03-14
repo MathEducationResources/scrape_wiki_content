@@ -8,7 +8,7 @@ all:
 ## clean: remove all intermediate files: csv and json
 clean:
 
-.PHONY: all, clean, all_json, add_latex
+.PHONY: all, clean, all_json, add_latex, summary_data/questions_topic.csv
 
 ## summary_data/questions_meta.csv: csv with meta data (URL,course,exam,question,num_hints,num_sols). Optional: ARGS="--verbose --write_all"
 summary_data/questions_meta.csv: wiki2csv.py helpers.py
