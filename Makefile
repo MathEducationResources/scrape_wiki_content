@@ -4,11 +4,17 @@ help: Makefile
 
 ## all:
 all:
+	python wiki2csv.py --meta --write_all
+	python wiki2csv.py --topic
+	python wiki2csv.py --examURL
+	python wiki2json.py
+	python raw2latex.py
+	python latex2pdf.py
 
 ## clean: remove all intermediate files: csv and json
 clean:
 
-.PHONY: all, clean, all_json, add_latex, summary_data/questions_topic.csv
+.PHONY: all, clean, all_json, add_latex, summary_data/questions_topic.csv, summary_data/questions_meta.csv, summary_data/exam_pdf_url.csv
 
 ## summary_data/questions_meta.csv: csv with meta data (URL,course,exam,question,num_hints,num_sols). Optional: ARGS="--verbose --write_all"
 summary_data/questions_meta.csv: wiki2csv.py helpers.py
@@ -22,15 +28,19 @@ summary_data/questions_topic.csv: wiki2csv.py helpers.py
 	python $< --topic $(ARGS)
 
 ## summary_data/exam_pdf_url.csv: csv with url of each exam. Optional: ARGS="--verbose"
-summary_data/exam_pdf_url.csv: wiki2csv.py helpers.py summary_data/questions_meta.csv
+summary_data/exam_pdf_url.csv: wiki2csv.py helpers.py
 	python $< --examURL $(ARGS)
 
 ## raw_json: scrape raw content from UBC wiki Optional: ARGS="--write_all --filter=..."
-raw_json: wiki2json.py helpers.py summary_data/questions_meta.csv
+raw_json: wiki2json.py helpers.py
 	python $< $(ARGS)
 
 ## add_latex: compiles raw mediawiki version to latex
 add_latex: raw2latex.py 
+	python $<
+
+## create_pdfs: creates pdf version of each exam
+create_pdfs: latex2pdf.py
 	python $<
 
 ## backup_mongodb: backs up production mongodb (currently not working on mongodb 3.x)
