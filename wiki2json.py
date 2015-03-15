@@ -25,7 +25,8 @@ def handleImages(state_or_hint_or_sol, where_to_save):
             os.makedirs(directory)
 
         urllib.urlretrieve(
-            "http:" + raw_image_url, os.path.join(directory, imageName))
+            "http:" + raw_image_url, os.path.join(
+                directory, imageName.replace('\xe2\x80\x8e', '')))
 
     def handle_gif(imageName, directory):
         newName = imageName.replace('.gif', '.png')
@@ -38,11 +39,13 @@ def handleImages(state_or_hint_or_sol, where_to_save):
     directory = where_to_save.split('/Question')[0]
     # images are either referenced by "File:"" or "Image:"
     # print state_or_hint_or_sol
-    image_list = re.findall(r"File:(.*)]]", state_or_hint_or_sol)
-    file_list = re.findall(r"Image:(.*)]]", state_or_hint_or_sol)
+    image_list = re.findall(r"File:(.*?)]]", state_or_hint_or_sol)
+    file_list = re.findall(r"Image:(.*?)]]", state_or_hint_or_sol)
+
     image_list = image_list + file_list
     image_list = [i.split('|')[0].strip().replace(' ', '_')
                   for i in image_list]
+
     for imageName in image_list:
         save_image(imageName, directory)
         if '.gif' in imageName:
