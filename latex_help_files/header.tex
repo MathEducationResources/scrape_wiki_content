@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{fixltx2e}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames]{xcolor}
+\usepackage{longtable}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{multicol}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{xcolor}
+\usetikzlibrary{shadows.blur}
+
+\newlength{\forkmeoffset}
+\setlength{\forkmeoffset}{12em}
+\definecolor{forkmebg}{HTML}{CC0000}
+\definecolor{forkmefg}{HTML}{EEEEEE}
+
+\newcommand{\forkme}[1][west]{
+	\ifthenelse{\equal{#1}{east}}{%
+		\tikzset{forkmerot/.style={rotate=-45}}
+	}{%
+		\tikzset{forkmerot/.style={rotate=45}}
+	}
+	\begin{tikzpicture}[remember picture, overlay]
+	\node[forkmerot, shift={(0, -\forkmeoffset)}] at (current page.north #1) {
+		\begin{tikzpicture}[remember picture, overlay]
+		\node[fill=forkmebg, text centered, minimum width=50em, minimum height=3.0em, blur shadow, shadow yshift=0pt, shadow xshift=0pt, shadow blur radius=.4em, shadow opacity=50, text=forkmefg](fmogh) at (0pt, 0pt) {   \fontfamily{phv}\selectfont\bfseries Final answers script in beta};
+		\draw[forkmefg!60, dashed, line width=.08em, dash pattern=on .5em off 1.5\pgflinewidth] (-25em,1.2em) rectangle (25em,-1.2em);
+		\end{tikzpicture}
+	};
+	\end{tikzpicture}
+}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\arcsec}{arcsec}
+\DeclareMathOperator{\arccot}{arccot}
+\DeclareMathOperator{\arccsc}{arccsc}
+\definecolor{main_Color}{HTML}{2F4F4F}
+\definecolor{secondary_Color1}{HTML}{666666}
+\definecolor{secondary_Color2}{HTML}{7491A3}
+
+\setlength{\parindent}{0pt}
+\setcounter{secnumdepth}{-2}
+
+\makeatletter
+\def\MERQuestionTitle{\@ifnextchar[{\@with}{\@without}}
+\def\@with[#1]#2{{\normalfont\large\bfseries #2} \MEREasiness{#1}}
+\def\@without#1{{\normalfont\large\bfseries #1}\\[.15cm]}
+\makeatother
+
+\newcommand{\MERDocumentTitle}[1]{\section{#1}}
+%\newcommand{\MERQuestionTitle}[1]{{\normalfont\large\bfseries #1}}
+\newcommand{\MEREasiness}[1]{\quad \hfill \textbf{Easiness: #1/100}\\[.15cm]}
+
+\newenvironment{MERStatement}{\fcolorbox{main_Color}{main_Color}%
+{\color{white}\textsc{Statement.}}\color{main_Color}}%
+{\hspace{\stretch{1}}\color{main_Color}\rule{10ex}{1ex}\medskip}
+
+\newenvironment{MERHint}[1]{\fcolorbox{secondary_Color2}{secondary_Color2}%
+{\textsc{Hint#1.}}}%
+{\ \\ \smallskip \\}
+
+\newenvironment{MERAnswer}{\fcolorbox{secondary_Color2}{secondary_Color2}%
+{\textsc{Final answer.}}}%
+{\ \\ \smallskip \\}
+
+\newenvironment{MERSolution}[1]{\fcolorbox{secondary_Color2}{secondary_Color2}%
+{\textsc{Solution#1.}\\}}%
+{\ \\ \smallskip \\}

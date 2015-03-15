@@ -66,11 +66,11 @@ def write_answers_content(answers_latex, question_title, f_a, rating):
 
 
 def write_content(df, exam):
-    where_to_save_h = 'compile/h_content.tex'
+    where_to_save_h = 'latex_help_files/h_content.tex'
     f_h = open(where_to_save_h, 'w')
-    where_to_save_s = 'compile/s_content.tex'
+    where_to_save_s = 'latex_help_files/s_content.tex'
     f_s = open(where_to_save_s, 'w')
-    where_to_save_a = 'compile/a_content.tex'
+    where_to_save_a = 'latex_help_files/a_content.tex'
     f_a = open(where_to_save_a, 'w')
 
     for index, row in df.iterrows():
@@ -82,7 +82,7 @@ def write_content(df, exam):
         fd = open(loc, 'r')
         data = json.loads(fd.read())
         fd.close()
-        #statement_latex = data['statement_latex']
+        # statement_latex = data['statement_latex']
         hints_latex = data['hints_latex']
         sols_latex = data['sols_latex']
         answers_latex = data['answer_latex']
@@ -108,7 +108,7 @@ def write_content(df, exam):
 
 
 def write_h_latex(course, exam):
-    h_latex = open('compile/MERHints.tex', 'w')
+    h_latex = open('latex_help_files/MERHints.tex', 'w')
     h_latex.write('\\input{header}\n')
     course = '\\newcommand{\\course}{' + course.strip() + ' }\n'
     h_latex.write(course)
@@ -123,7 +123,7 @@ def write_h_latex(course, exam):
 
 
 def write_s_latex(course, exam, examURL):
-    s_latex = open('compile/MERSolutions.tex', 'w')
+    s_latex = open('latex_help_files/MERSolutions.tex', 'w')
     s_latex.write('\\input{header}\n')
     course = '\\newcommand{\\course}{' + course.strip() + ' }\n'
     s_latex.write(course)
@@ -141,7 +141,7 @@ def write_s_latex(course, exam, examURL):
 
 
 def write_a_latex(course, exam, examURL):
-    a_latex = open('compile/MERAnswers.tex', 'w')
+    a_latex = open('latex_help_files/MERAnswers.tex', 'w')
     a_latex.write('\\input{header}\n')
     course = '\\newcommand{\\course}{' + course.strip() + ' }\n'
     a_latex.write(course)
@@ -158,7 +158,7 @@ def write_a_latex(course, exam, examURL):
 
 
 def write_ha_latex(course, exam):
-    ha_latex = open('compile/MERHintsAnswer.tex', 'w')
+    ha_latex = open('latex_help_files/MERHintsAnswer.tex', 'w')
     ha_latex.write('\\input{header}\n')
     course = '\\newcommand{\\course}{' + course.strip() + ' }\n'
     ha_latex.write(course)
@@ -177,9 +177,9 @@ def write_ha_latex(course, exam):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description=('MER topic or exam to json'
-                                                  ' with the option to compile'
-                                                  ' to LaTeX'))
+    parser = argparse.ArgumentParser(
+        description=('MER topic or exam to json'
+                     ' with the option to write out to pdf using LaTeX'))
     parser.add_argument('--course', dest='course', default='/',
                         help='filter on course')
     parser.set_defaults(course='/')
@@ -213,14 +213,14 @@ if __name__ == '__main__':
         examURL = row.examURL
 
     write_content(df, exam)
-    #write_h_latex(course, exam)
+    # write_h_latex(course, exam)
     write_s_latex(course, exam, examURL)
     write_a_latex(course, exam, examURL)
-    #write_ha_latex(course, exam)
+    # write_ha_latex(course, exam)
 
     print('done preparing. On to LaTeX!')
 
-    directory = os.path.join('compile')
+    directory = os.path.join('latex_help_files')
     os.chdir(directory)
 
     # for myname in ['MERAnswers', 'MERSolutions', 'MERHints',
