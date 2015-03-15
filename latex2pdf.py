@@ -77,7 +77,10 @@ def write_content(df, exam):
         loc = row.location
         question = row.question
         url = row.URL
-        rating = row.rating
+        try:
+            rating = row.rating
+        except AttributeError:
+            rating = 'None'
 
         fd = open(loc, 'r')
         data = json.loads(fd.read())
