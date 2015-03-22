@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import subprocess
 import glob
+import sys
 
 
 def file_loc_from_question_url(url):
@@ -193,47 +194,70 @@ if __name__ == '__main__':
 
     df = pd.read_csv('summary_data/questions_meta.csv')
     df['location'] = df['URL'].apply(file_loc_from_question_url)
-    df = df[df.URL.str.contains(args.course)]
 
-    df_examURL = pd.read_csv('summary_data/exam_pdf_url.csv')
-    title = args.course
+    if args.course == '/':
+        exams = df.groupby(['course', 'exam']).groups.keys()
+        print('No course specified. Updating all following exams.')
+        print(sorted(exams))
+        for (c, e) in sorted(exams):
+            q_filter = os.path.join(c, e)
+            print(q_filter)
+            subprocess.check_output(['python', 'latex2pdf.py',
+                                     '--course', q_filter])
 
-    if 'MATH' in title:
-        course = 'MATH' + title.split('MATH')[-1][0:3]
+            nameNew = os.path.join('allPDFs', '%s_%s_Solutions.pdf' % (c, e))
+            x = subprocess.check_output(["mv",
+                                         os.path.join('latex_help_files',
+                                                      'MERSolutions.pdf'),
+                                         nameNew])
+
+            nameNew = os.path.join('allPDFs', '%s_%s_Answers.pdf' % (c, e))
+            x = subprocess.check_output(["mv",
+                                         os.path.join('latex_help_files',
+                                                      'MERAnswers.pdf'),
+                                         nameNew])
     else:
-        course = ''
-    if 'December' in title:
-        exam = 'December ' + title.split('December')[-1][1:5]
-    elif 'April' in title:
-        exam = 'April ' + title.split('April')[-1][1:5]
-    else:
-        exam = ''
+        df = df[df.URL.str.contains(args.course)]
 
-    df_examURL = df_examURL[df_examURL.course.str.contains(course)]
-    df_examURL = df_examURL[
-        df_examURL.exam.str.contains(exam.replace(' ', '_'))]
-    for index, row in df_examURL.iterrows():
-        examURL = row.examURL
+        df_examURL = pd.read_csv('summary_data/exam_pdf_url.csv')
+        title = args.course
 
-    write_content(df, exam)
-    # write_h_latex(course, exam)
-    write_s_latex(course, exam, examURL)
-    write_a_latex(course, exam, examURL)
-    # write_ha_latex(course, exam)
+        if 'MATH' in title:
+            course = 'MATH' + title.split('MATH')[-1][0:3]
+        else:
+            course = ''
+        if 'December' in title:
+            exam = 'December ' + title.split('December')[-1][1:5]
+        elif 'April' in title:
+            exam = 'April ' + title.split('April')[-1][1:5]
+        else:
+            exam = ''
 
-    print('done preparing. On to LaTeX!')
+        df_examURL = df_examURL[df_examURL.course.str.contains(course)]
+        df_examURL = df_examURL[
+            df_examURL.exam.str.contains(exam.replace(' ', '_'))]
+        for index, row in df_examURL.iterrows():
+            examURL = row.examURL
 
-    directory = os.path.join('latex_help_files')
-    os.chdir(directory)
+        write_content(df, exam)
+        # write_h_latex(course, exam)
+        write_s_latex(course, exam, examURL)
+        write_a_latex(course, exam, examURL)
+        # write_ha_latex(course, exam)
 
-    # for myname in ['MERAnswers', 'MERSolutions', 'MERHints',
-    # 'MERHintsAnswer']:
-    for myname in ['MERSolutions', 'MERAnswers']:
-        x = subprocess.check_output(
-            ["pdflatex", "%s.tex" % myname])
-        x = subprocess.check_output(
-            ["pdflatex", "%s.tex" % myname])
-    for ending in ['log', 'aux', 'out', 'toc']:
-        for doomed in glob.glob('*' + ending):
-            os.remove(doomed)
-    print('Finished')
+        print('done preparing. On to LaTeX!')
+
+        directory = os.path.join('latex_help_files')
+        os.chdir(directory)
+
+        # for myname in ['MERAnswers', 'MERSolutions', 'MERHints',
+        # 'MERHintsAnswer']:
+        for myname in ['MERSolutions', 'MERAnswers']:
+            x = subprocess.check_output(
+                ["pdflatex", "%s.tex" % myname])
+            x = subprocess.check_output(
+                ["pdflatex", "%s.tex" % myname])
+        for ending in ['log', 'aux', 'out', 'toc']:
+            for doomed in glob.glob('*' + ending):
+                os.remove(doomed)
+        print('Finished')
