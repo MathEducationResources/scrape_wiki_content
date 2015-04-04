@@ -1,6 +1,7 @@
 import urllib
 import lxml
 import lxml.html
+import pandas as pd
 
 
 def list_recently_updated_questions():
@@ -18,12 +19,13 @@ def list_recently_updated_questions():
     return list(set(recentlyUpdatedQuestions))
 
 
-def delete_recent_questions_in_meta():
+def delete_recent_questions_in_csv(filename):
     to_remove = list_recently_updated_questions()
-    with open("summary_data/questions_meta.csv", "r") as f:
+
+    with open(filename, "r") as f:
         lines = f.readlines()
 
-    with open("summary_data/questions_meta.csv", "w") as f:
+    with open(filename, "w") as f:
         for line in lines:
             q_name = line.split(',')[0].replace('http://wiki.ubc.ca', '')
             if q_name not in to_remove:
@@ -121,3 +123,8 @@ def split_at_dot(text):
     if not brackets_check(text) or not beginend_check(text):
         raise Exception("text not well formatted %s" % text)
     return combine(text.split(' .'), list())
+
+
+def sort_my_csv(filename):
+    df = pd.read_csv(filename)
+    df.sort('URL').to_csv(filename, index=False)

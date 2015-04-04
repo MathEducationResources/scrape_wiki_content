@@ -7,6 +7,7 @@ all:
 	python wiki2csv.py --meta --write_all
 	python wiki2csv.py --topic
 	python wiki2csv.py --examURL
+	python wiki2csv.py --contributors_flags --write_all
 	python wiki2json.py
 	python raw2latex.py
 	python latex2pdf.py
@@ -14,7 +15,7 @@ all:
 ## clean: remove all intermediate files: csv and json
 clean:
 
-.PHONY: all, clean, all_json, add_latex, summary_data/questions_topic.csv, summary_data/questions_meta.csv, summary_data/exam_pdf_url.csv
+.PHONY: all clean all_json add_latex summary_data/questions_topic.csv summary_data/questions_meta.csv summary_data/exam_pdf_url.csv summary_data/contributors.csv summary_data/flags.csv
 
 ## summary_data/questions_meta.csv: csv with meta data (URL,course,exam,question,num_hints,num_sols). Optional: ARGS="--verbose --write_all"
 summary_data/questions_meta.csv: wiki2csv.py helpers.py
@@ -30,6 +31,14 @@ summary_data/questions_topic.csv: wiki2csv.py helpers.py
 ## summary_data/exam_pdf_url.csv: csv with url of each exam. Optional: ARGS="--verbose"
 summary_data/exam_pdf_url.csv: wiki2csv.py helpers.py
 	python $< --examURL $(ARGS)
+
+## summary_data/contributors.csv: csv with contributors for each question. Optional: ARGS="--verbose --write_all". Same as summary_data/flags.csv
+summary_data/contributors.csv: wiki2csv.py helpers.py
+	python $< --contributors_flags $(ARGS)
+
+## summary_data/flags.csv: csv with quality flags for each question. Optional: ARGS="--verbose --write_all". Same as summary_data/contributors.csv
+summary_data/flags.csv: wiki2csv.py helpers.py
+	python $< --contributors_flags $(ARGS)
 
 ## raw_json: scrape raw content from UBC wiki Optional: ARGS="--write_all --filter=..."
 raw_json: wiki2json.py helpers.py
