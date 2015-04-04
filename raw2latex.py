@@ -87,6 +87,7 @@ def postCleaning(input):
     input = input.replace(u'\u00e2\u0088\u00921', '-1')
     input = input.replace(u'\xd7', '$\\times$')
     input = input.replace(u'\xb1', '$\\pm$')
+    input = input.replace(u'\xc3\xb4', '\^{o}')
 
     input = re.sub(r'\$\\displaystyle\s*\n*',
                    r'$\\displaystyle ', input)
