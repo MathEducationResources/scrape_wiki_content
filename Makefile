@@ -8,7 +8,7 @@ all:
 	python wiki2csv.py --topic
 	python wiki2csv.py --examURL
 	python wiki2csv.py --contributors_flags --write_all
-	python wiki2json.py
+	python wiki2json.py --write_all
 	python raw2latex.py
 	python latex2pdf.py
 

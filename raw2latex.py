@@ -3,14 +3,12 @@
 import pypandoc
 import re
 import os
-import os.path
 import json
 import argparse
 import sys
 import subprocess
 import pandas as pd
-from helpers import (split_at_equal, split_at_nextline,
-                     brackets_check, split_at_dot)
+from helpers import (split_at_equal, split_at_nextline, brackets_check)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -342,7 +340,7 @@ def make_raw_2_latex(df):
         if not os.path.exists(loc.split('/Question')[0]):
             os.makedirs(loc.split('/Question')[0])
         with open(loc, "w") as outfile:
-            json.dump(data, outfile, indent=4)
+            json.dump(data, outfile, indent=4, sort_keys=True)
 
 
 if __name__ == '__main__':
@@ -354,10 +352,10 @@ if __name__ == '__main__':
     parser.set_defaults(course='/')
     args = parser.parse_args()
 
-    if not os.path.exists('summary_data/questions_meta.csv'):
+    if not os.path.exists(os.path.join('summary_data', 'questions_meta.csv')):
         raise Exception('Require summary_data/questions_meta.csv')
 
-    df = pd.read_csv('summary_data/questions_meta.csv')
+    df = pd.read_csv(os.path.join('summary_data', 'questions_meta.csv'))
     if args.course == '/':
         courses = df.groupby('course').groups.keys()
         print(

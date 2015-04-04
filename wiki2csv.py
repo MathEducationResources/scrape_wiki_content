@@ -315,6 +315,9 @@ def write_contributors_and_flags(verbose, write_all):
         flags = []
         for text in dom.split('[[Category:MER ')[1:]:
             flags.append(text.split(' flag]]')[0])
+
+        # Remove topic flags
+        flags = [f for f in flags if not 'Tag' == f[:3]]
         return flags
 
     if write_all:

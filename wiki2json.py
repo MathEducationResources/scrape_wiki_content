@@ -151,10 +151,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if not os.path.exists('summary_data/questions_meta.csv'):
+    if not os.path.exists(os.path.join('summary_data', 'questions_meta.csv')):
         raise Exception('Require summary_data/questions_meta.csv')
 
-    df = pd.read_csv('summary_data/questions_meta.csv')
+    df = pd.read_csv(os.path.join('summary_data', 'questions_meta.csv'))
     if args.q_filter == '/':
         if args.write_all:
             courses = df.groupby('course').groups.keys()
