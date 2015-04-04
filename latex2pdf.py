@@ -189,10 +189,10 @@ if __name__ == '__main__':
     parser.set_defaults(course='/')
     args = parser.parse_args()
 
-    if not os.path.exists('summary_data/questions_meta.csv'):
+    if not os.path.exists(os.path.join('summary_data', 'questions_meta.csv')):
         raise Exception('Require summary_data/questions_meta.csv')
 
-    df = pd.read_csv('summary_data/questions_meta.csv')
+    df = pd.read_csv(os.path.join('summary_data', 'questions_meta.csv'))
     df['location'] = df['URL'].apply(file_loc_from_question_url)
 
     if args.course == '/':
@@ -205,6 +205,8 @@ if __name__ == '__main__':
             subprocess.check_output(['python', 'latex2pdf.py',
                                      '--course', q_filter])
 
+            if not os.path.exists('allPDFs'):
+                os.makedirs('allPDFs')
             nameNew = os.path.join('allPDFs', '%s_%s_Solutions.pdf' % (c, e))
             x = subprocess.check_output(["mv",
                                          os.path.join('latex_help_files',
@@ -219,7 +221,8 @@ if __name__ == '__main__':
     else:
         df = df[df.URL.str.contains(args.course)]
 
-        df_examURL = pd.read_csv('summary_data/exam_pdf_url.csv')
+        df_examURL = pd.read_csv(os.path.join('summary_data',
+                                              'exam_pdf_url.csv'))
         title = args.course
 
         if 'MATH' in title:
