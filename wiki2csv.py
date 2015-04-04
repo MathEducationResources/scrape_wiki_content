@@ -5,11 +5,12 @@ import lxml.html
 import pandas as pd
 from helpers import (list_recently_updated_questions,
                      delete_recent_questions_in_meta)
+import os
 
 
 def write_questions_meta(verbose, write_all):
     MER_URL = 'http://wiki.ubc.ca/Science:Math_Exam_Resources'
-    WHERE_TO_SAVE = 'summary_data/questions_meta.csv'
+    WHERE_TO_SAVE = os.path.join('summary_data', 'questions_meta.csv')
 
     def get_all_courses():
         connection = urllib.urlopen(MER_URL)
@@ -155,7 +156,7 @@ def write_questions_topic(verbose):
         questionLinks = list(set(questionLinks))
         return questionLinks, parent
 
-    WHERE_TO_SAVE = 'summary_data/questions_topic.csv'
+    WHERE_TO_SAVE = os.path.join('summary_data', 'questions_topic.csv')
     topics = get_all_topics()
 
     with open(WHERE_TO_SAVE, 'w') as f:
@@ -173,10 +174,10 @@ def write_questions_topic(verbose):
 
 
 def write_exam_pdf_url(verbose):
-    WHERE_TO_SAVE = 'summary_data/exam_pdf_url.csv'
+    WHERE_TO_SAVE = os.path.join('summary_data', 'exam_pdf_url.csv')
 
     try:
-        df = pd.read_csv('summary_data/questions_meta.csv')
+        df = pd.read_csv(os.path.join('summary_data', 'questions_meta.csv'))
     except IOError:
         raise AssertionError("""Must first create questions_meta.csv by
                              calling this function with --meta flag""")
