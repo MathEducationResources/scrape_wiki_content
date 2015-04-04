@@ -4,13 +4,7 @@ import pandas as pd
 import json
 import subprocess
 import glob
-import sys
-
-
-def file_loc_from_question_url(url):
-    course, exam, q_name = url.split('/')[5:8]
-    file_loc = os.path.join('json_data', course, exam, q_name + '.json')
-    return file_loc
+from helpers import file_loc_from_question_url
 
 
 def make_question_title(question, term, year, url):

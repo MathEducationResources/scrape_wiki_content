@@ -8,7 +8,8 @@ import argparse
 import sys
 import subprocess
 import pandas as pd
-from helpers import (split_at_equal, split_at_nextline, brackets_check)
+from helpers import (split_at_equal, split_at_nextline,
+                     brackets_check, file_loc_from_question_url)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -88,6 +89,9 @@ def postCleaning(input):
     input = input.replace(u'\xd7', '$\\times$')
     input = input.replace(u'\xb1', '$\\pm$')
     input = input.replace(u'\xc3\xb4', '\^{o}')
+    input = input.replace(u'\xc3\x97', '$\\times$')
+    input = input.replace(u'\xe2\x80\x9c', '``')
+    input = input.replace(u'\xe2\x80\x9d', '``')
 
     input = re.sub(r'\$\\displaystyle\s*\n*',
                    r'$\\displaystyle ', input)
@@ -159,12 +163,6 @@ def postCleaning(input):
     input = re.sub(r'(?<!\n)\\end{align\*}', r'\n\end{align*}', input)
 
     return input.strip()
-
-
-def file_loc_from_question_url(url):
-    course, exam, q_name = url.split('/')[5:8]
-    file_loc = os.path.join('json_data', course, exam, q_name + '.json')
-    return file_loc
 
 
 def fix_details(content, loc):

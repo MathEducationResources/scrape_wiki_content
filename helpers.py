@@ -2,6 +2,13 @@ import urllib
 import lxml
 import lxml.html
 import pandas as pd
+import os
+
+
+def file_loc_from_question_url(url):
+    course, exam, q_name = url.split('/')[5:8]
+    file_loc = os.path.join('json_data', course, exam, q_name + '.json')
+    return file_loc
 
 
 def list_recently_updated_questions():

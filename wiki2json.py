@@ -8,7 +8,8 @@ import json
 import re
 import subprocess
 import warnings
-from helpers import list_recently_updated_questions, url2questionID
+from helpers import (list_recently_updated_questions, url2questionID,
+                     file_loc_from_question_url)
 
 
 def handleImages(state_or_hint_or_sol, where_to_save):
@@ -56,12 +57,6 @@ def get_dict_action_urls(url, state_or_hint_or_sol):
     URL = (url.replace("Science", "index.php?title=Science") +
            "/" + state_or_hint_or_sol + "&action=edit")
     return URL
-
-
-def file_loc_from_question_url(url):
-    course, exam, q_name = url.split('/')[5:8]
-    file_loc = os.path.join('json_data', course, exam, q_name + '.json')
-    return file_loc
 
 
 def grab_raw(df):
