@@ -10,7 +10,9 @@ all:
 	python wiki2csv.py --contributors_flags --write_all
 	python wiki2json.py --write_all
 	python raw2latex.py
+	python add2json.py
 	python latex2pdf.py
+
 
 ## clean: remove all intermediate files: csv and json
 clean:
@@ -46,6 +48,10 @@ raw_json: wiki2json.py helpers.py
 
 ## add_latex: compiles raw mediawiki version to latex
 add_latex: raw2latex.py 
+	python $<
+
+## add2json: adds contributors, flags, topics, votes and html to json files
+add2json: add2json.py
 	python $<
 
 ## create_pdfs: creates pdf version of each exam
