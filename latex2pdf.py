@@ -19,10 +19,10 @@ def make_question_title(question, term, year, url):
 
 
 def write_hints_content(hints_latex, question_title, f_h, rating):
-    if 'on' in rating:
-        f_h.write('\MERQuestionTitle{' + question_title + '}')
+    if rating:
+        f_h.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
-        f_h.write('\MERQuestionTitle[' + rating + ']{' + question_title + '}')
+        f_h.write('\MERQuestionTitle{' + question_title + '}')
     for num, hint in enumerate(hints_latex):
         if len(hints_latex) == 1:
             f_h.write('\\begin{MERHint}{}\n')
@@ -33,10 +33,11 @@ def write_hints_content(hints_latex, question_title, f_h, rating):
 
 
 def write_sols_content(sols_latex, question_title, f_s, rating):
-    if 'on' in rating:
-        f_s.write('\MERQuestionTitle{' + question_title + '}')
+    if rating:
+        f_s.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
-        f_s.write('\MERQuestionTitle[' + rating + ']{' + question_title + '}')
+        f_s.write('\MERQuestionTitle{' + question_title + '}')
+
     for num, sol in enumerate(sols_latex):
         if len(sols_latex) == 1:
             f_s.write('\\begin{MERSolution}{}\n')
@@ -51,10 +52,10 @@ def write_sols_content(sols_latex, question_title, f_s, rating):
 
 
 def write_answers_content(answers_latex, question_title, f_a, rating):
-    if 'on' in rating:
-        f_a.write('\MERQuestionTitle{' + question_title + '}')
+    if rating:
+        f_a.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
-        f_a.write('\MERQuestionTitle[' + rating + ']{' + question_title + '}')
+        f_a.write('\MERQuestionTitle{' + question_title + '}')
     f_a.write('\\begin{MERAnswer}\n')
     f_a.write(answers_latex)
     f_a.write('\n\\end{MERAnswer}\n')
@@ -72,14 +73,15 @@ def write_content(df, exam):
         loc = row.location
         question = row.question
         url = row.URL
-        try:
-            rating = row.rating
-        except AttributeError:
-            rating = 'None'
 
-        fd = open(loc, 'r')
-        data = json.loads(fd.read())
-        fd.close()
+        with open(loc, 'r') as fd:
+            data = json.loads(fd.read())
+
+        try:
+            rating = data['rating']
+        except KeyError:
+            rating = None
+
         # statement_latex = data['statement_latex']
         hints_latex = data['hints_latex']
         sols_latex = data['sols_latex']
