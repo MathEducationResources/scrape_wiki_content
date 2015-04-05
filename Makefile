@@ -8,6 +8,7 @@ all:
 	python wiki2csv.py --topic
 	python wiki2csv.py --examURL
 	python wiki2csv.py --contributors_flags --write_all
+	python topics2json.py
 	python wiki2json.py --write_all
 	python raw2latex.py
 	python add2json.py
@@ -42,7 +43,11 @@ summary_data/contributors.csv: wiki2csv.py helpers.py
 summary_data/flags.csv: wiki2csv.py helpers.py
 	python $< --contributors_flags $(ARGS)
 
-## raw_json: scrape raw content from UBC wiki Optional: ARGS="--write_all --filter=..."
+## topics2json: saves topic video links to json. Optional: ARGS="--q_filter=..."
+topics2json: topics2json.py
+	python $< $(ARGS)
+
+## raw_json: scrape raw content from UBC wiki. Optional: ARGS="--write_all --filter=..."
 raw_json: wiki2json.py helpers.py
 	python $< $(ARGS)
 
@@ -52,7 +57,7 @@ add_latex: raw2latex.py
 
 ## add2json: adds contributors, flags, topics, votes and html to json files
 add2json: add2json.py
-	python $<
+	python $< $(ARGS)
 
 ## create_pdfs: creates pdf version of each exam
 create_pdfs: latex2pdf.py
