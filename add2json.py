@@ -97,6 +97,10 @@ def add_html(df, verbose=False):
     def latex2html(text):
         text = pypandoc.convert(
             text, 'html', format='latex', extra_args=["--mathjax", "--ascii"])
+        # Add class to each image
+        text = text.replace('<img src="../json_data',
+                            ('<img class="question_image" '
+                             'src="/assets/raw_database/json_data'))
         return text
 
     for num, row in df.iterrows():
@@ -107,6 +111,10 @@ def add_html(df, verbose=False):
         if os.path.exists(location):
             with open(location, 'r') as f:
                 data = json.loads(f.read())
+
+            if not 'num_votes' in data:
+                data['num_votes'] = 0
+                data['rating'] = -1
 
             try:
                 sols_latex = data['sols_latex']
