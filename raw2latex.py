@@ -160,7 +160,7 @@ def postCleaning(input):
     input = re.sub(r'\\right\.\s+', r'\\right.', input)
 
     input = re.sub(r'\\begin{align\*}\s*(?!\n)', r'\\begin{align*}\n', input)
-    input = re.sub(r'(?<!\n)\\end{align\*}', r'\n\end{align*}', input)
+    input = re.sub(r'(?<!\n)\\end{align\*}', r'\n\\end{align*}', input)
 
     return input.strip()
 
