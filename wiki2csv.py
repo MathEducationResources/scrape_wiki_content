@@ -78,9 +78,13 @@ def write_questions_meta(verbose, write_all):
         def get_URL_course_exam_question():
             question_info = questionURL.split('/')
             URL = 'http://wiki.ubc.ca' + questionURL
-            course = question_info[3]
-            exam = question_info[4]
-            question = question_info[5]
+            try:
+                course = question_info[3]
+                exam = question_info[4]
+                question = question_info[5]
+            except IndexError:
+                print('Problem with', URL)
+                raise
             question = question.replace('Question_0', '')
             question = question.replace('Question_', '')
             question = question.replace('_', ' ')

@@ -19,10 +19,16 @@ def list_recently_updated_questions():
     recentlyUpdatedQuestions = []
     for link in dom.xpath('//a/@href'):
         if searchText in link:
-            # to project changes in parts of the questions onto the question
+            if 'Syllabus' in link:
+                continue
+
             temp = link.split("/")
-            question_only = "/".join(temp[:6])
-            recentlyUpdatedQuestions.append(question_only)
+
+            # skip changes in course or exam page
+            if len(temp) >= 6:
+                # project changes in statement, hint, solution on the question
+                question_only = "/".join(temp[:6])
+                recentlyUpdatedQuestions.append(question_only)
     return list(set(recentlyUpdatedQuestions))
 
 
