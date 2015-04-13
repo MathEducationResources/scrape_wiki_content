@@ -258,7 +258,10 @@ def write_contributors_and_flags(verbose, write_all):
         for url in urls:
             writers = url2writers(url)
             if 'Solution' in url:
-                sol_writers.append(writers[-1])
+                if not writers:
+                    print('No solution writers for', url, '?')
+                else:
+                    sol_writers.append(writers[-1])
             writerlist += writers
         writerlist = list(set(writerlist))
         for sol_writer in sol_writers:
@@ -278,6 +281,8 @@ def write_contributors_and_flags(verbose, write_all):
             f.write('URL,role,username\n')
             for index, row in df.iterrows():
                 question_url = row.URL
+                if verbose:
+                    print(question_url)
                 num_hints = row.num_hints
                 num_sols = row.num_sols
                 urls = info2urls(question_url, num_hints, num_sols)
@@ -302,6 +307,8 @@ def write_contributors_and_flags(verbose, write_all):
             if len(row.index) > 1:
                 print("WARNING: Duplicate entry for %s" % q)
             question_url = row.URL.values[0]
+            if verbose:
+                print(question_url)
             num_hints = row.num_hints.values[0]
             num_sols = row.num_sols.values[0]
             urls = info2urls(question_url, num_hints, num_sols)
@@ -336,7 +343,7 @@ def write_contributors_and_flags(verbose, write_all):
 
                 if len(flags) > 4:
                     print('Question with more than 4 flags:',
-                          question_url, flags)
+                          question_url, [flag[:30] for flag in flags])
 
                 g.write('%s,%s,%s,%s,%s\n' %
                         (question_url, flags[0], flags[1], flags[2], flags[3]))
