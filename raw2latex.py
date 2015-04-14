@@ -329,7 +329,11 @@ def make_raw_2_latex(df):
                                  format='mediawiki'))
             sol_latex = fix_details(sol_latex, loc)
             sols_latex.append(sol_latex)
-        answer_latex = make_final_answer(sols_latex[0])
+        try:
+            answer_latex = make_final_answer(sols_latex[0])
+        except:
+            print('Can not make final answer for %s' % data['ID'])
+            raise
 
         data['statement_latex'] = statement_latex
         data['hints_latex'] = hints_latex
