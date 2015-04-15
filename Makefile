@@ -47,7 +47,7 @@ summary_data/flags.csv: wiki2csv.py helpers.py
 topics2json: topics2json.py
 	python $< $(ARGS)
 
-## raw_json: scrape raw content from UBC wiki. Optional: ARGS="--write_all --filter=..."
+## raw_json: scrape raw content from UBC wiki. Optional: ARGS="--write_all --q_filter=..."
 raw_json: wiki2json.py helpers.py
 	python $< $(ARGS)
 
