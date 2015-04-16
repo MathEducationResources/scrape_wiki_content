@@ -15,7 +15,7 @@ def contributors2json(df, verbose=False):
         url = df_list.index[num][0]
         role = df_list.index[num][1]
         location = file_loc_from_question_url(url)
-        if verbose and num % 100 == 0:
+        if verbose:  # and num % 100 == 0:
             print(num, location)
 
         if os.path.exists(location):
@@ -101,11 +101,11 @@ def add_html(df, verbose=False):
         text = text.replace('<img src="../json_data',
                             ('<img class="question_image" '
                              'src="/assets/raw_database/json_data'))
-        return text
+        return text.strip()
 
     for num, row in df.iterrows():
         location = row.location
-        if verbose and num % 100 == 0:
+        if verbose:  # and num % 100 == 0:
             print(num, location)
 
         if os.path.exists(location):

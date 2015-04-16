@@ -219,7 +219,7 @@ def fix_details(content, loc):
 #        return content
 
     return remove_figure_environment(
-        gif_to_png(fix_image_path(fix_href(content))))
+        gif_to_png(fix_image_path(fix_href(content)))).strip()
 
 
 def make_final_answer(content):
@@ -299,10 +299,12 @@ def make_final_answer(content):
     return answer
 
 
-def make_raw_2_latex(df):
+def make_raw_2_latex(df, verbose=False):
 
     for index, row in df.iterrows():
         loc = row.location
+        if verbose:
+            print(loc)
 
         with open(loc, 'r') as fd:
             data = json.loads(fd.read())
@@ -350,25 +352,34 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=('MER topic or exam to json'
                                                   ' with the option to compile'
                                                   ' to LaTeX'))
-    parser.add_argument('--course', dest='course', default='/',
-                        help='filter on course')
-    parser.set_defaults(course='/')
+    parser.add_argument('--q_filter', dest='q_filter', default='/',
+                        help='filter on question')
+    parser.set_defaults(q_filter='/')
+
+    parser.add_argument('--verbose', dest='verbose',
+                        action='store_true',
+                        help='print progress')
+    parser.set_defaults(verbose=False)
+
     args = parser.parse_args()
 
     if not os.path.exists(os.path.join('summary_data', 'questions_meta.csv')):
         raise Exception('Require summary_data/questions_meta.csv')
 
     df = pd.read_csv(os.path.join('summary_data', 'questions_meta.csv'))
-    if args.course == '/':
+    if args.q_filter == '/':
         courses = df.groupby('course').groups.keys()
         print(
             'No course specified. Updating all following courses in parallel.')
         print(sorted(courses))
-        subprocess.check_output(
-            ['parallel', 'python', 'raw2latex.py',
-             '--course', ':::'] + courses)
+        if args.verbose:
+            subprocess.check_output(['parallel', 'python', 'raw2latex.py',
+                                     '--verbose', '--course', ':::'] + courses)
+        else:
+            subprocess.check_output(['parallel', 'python', 'raw2latex.py',
+                                     '--course', ':::'] + courses)
 
     df['location'] = df['URL'].apply(file_loc_from_question_url)
-    df = df[df.URL.str.contains(args.course, regex=False)]
+    df = df[df.URL.str.contains(args.q_filter, regex=False)]
 
-    make_raw_2_latex(df)
+    make_raw_2_latex(df, args.verbose)
