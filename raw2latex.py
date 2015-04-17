@@ -48,6 +48,7 @@ def preCleaning(input):
     input = re.sub(r':<math>\\displaystyle{(.*)}</math>',
                    r':<math>\n\1\n</math>', input)
     input = re.sub(r'(?<!\\)\$', r'\\$', input)
+    input = re.sub(r'\\end{align}([,.])', r'\1\\end{align}', input)
     return input
 
 
@@ -86,6 +87,7 @@ def postCleaning(input):
     input = input.replace(u'\u03b7', '$\\eta$')
     input = input.replace(u'\u03a3', '$\\Sigma$')
     input = input.replace(u'\u00e2\u0088\u00921', '-1')
+    input = input.replace(u'\u00e2\u0080\u0093', '-')
     input = input.replace(u'\xd7', '$\\times$')
     input = input.replace(u'\xb1', '$\\pm$')
     input = input.replace(u'\xc3\xb4', '\^{o}')
@@ -152,7 +154,7 @@ def postCleaning(input):
     input = re.sub(r'\\]([,.])', r'\1\\]', input)
 
     input = re.sub(r'&\s*=', '&=', input)
-    input = re.sub(r'=\s*&', '&=', input)
+    input = re.sub(r'([^&])=\s*&', r'\1&=', input)
     input = re.sub(r'\$\(\\emph(.*)\)', r'(\1)$', input)
     input = input.replace(
         '\[', '\\begin{align*}').replace('\]', '\end{align*}')

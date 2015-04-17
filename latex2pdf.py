@@ -19,7 +19,7 @@ def make_question_title(question, term, year, url):
 
 
 def write_hints_content(hints_latex, question_title, f_h, rating):
-    if rating:
+    if rating > 0:
         f_h.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
         f_h.write('\MERQuestionTitle{' + question_title + '}')
@@ -32,8 +32,8 @@ def write_hints_content(hints_latex, question_title, f_h, rating):
         f_h.write('\n\\end{MERHint}\n')
 
 
-def write_sols_content(sols_latex, question_title, f_s, rating):
-    if rating:
+def write_sols_content(sols_latex, question_title, f_s, rating, is_reviewed):
+    if rating > 0:
         f_s.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
         f_s.write('\MERQuestionTitle{' + question_title + '}')
@@ -43,6 +43,10 @@ def write_sols_content(sols_latex, question_title, f_s, rating):
             f_s.write('\\begin{MERSolution}{}\n')
         else:
             f_s.write('\\begin{MERSolution}{ %s}\n' % (num + 1))
+        if not is_reviewed and not 'No content found.' in sol:
+            f_s.write('{\\bf THIS QUESTION HAS NOT YET BEEN REVIEWED! THE '
+                      'SOLUTION BELOW MAY CONTAIN MISTAKES!} \n\n\medskip\n\n')
+
         try:
             f_s.write(sol)
         except UnicodeEncodeError:
@@ -51,12 +55,16 @@ def write_sols_content(sols_latex, question_title, f_s, rating):
         f_s.write('\n\\end{MERSolution}\n')
 
 
-def write_answers_content(answers_latex, question_title, f_a, rating):
-    if rating:
+def write_answers_content(answers_latex, question_title,
+                          f_a, rating, is_reviewed):
+    if rating > 0:
         f_a.write('\MERQuestionTitle[%.1f]{%s}' % (rating, question_title))
     else:
         f_a.write('\MERQuestionTitle{' + question_title + '}')
     f_a.write('\\begin{MERAnswer}\n')
+    if not is_reviewed and not 'No content found.' in answers_latex:
+        f_a.write('{\\bf THIS QUESTION HAS NOT YET BEEN REVIEWED! THE '
+                  'ANSWER BELOW MAY CONTAIN MISTAKES!} \n\n\medskip\n\n')
     f_a.write(answers_latex)
     f_a.write('\n\\end{MERAnswer}\n')
 
@@ -86,6 +94,11 @@ def write_content(df, exam):
         hints_latex = data['hints_latex']
         sols_latex = data['sols_latex']
         answers_latex = data['answer_latex']
+        try:
+            flags = data['flags']
+            is_reviewed = 'QGQ' in flags and 'QGH' in flags and 'QGS' in flags
+        except KeyError:
+            is_reviewed = True
 
         if exam == '':
             term = data['term']
@@ -97,9 +110,11 @@ def write_content(df, exam):
 
         write_hints_content(hints_latex, question_title, f_h, rating)
         f_h.write('\n')
-        write_sols_content(sols_latex, question_title, f_s, rating)
+        write_sols_content(sols_latex, question_title,
+                           f_s, rating, is_reviewed)
         f_s.write('\n')
-        write_answers_content(answers_latex, question_title, f_a, rating)
+        write_answers_content(answers_latex, question_title,
+                              f_a, rating, is_reviewed)
         f_a.write('\n')
 
     f_h.close()
