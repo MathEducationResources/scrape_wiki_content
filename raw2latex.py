@@ -376,10 +376,11 @@ if __name__ == '__main__':
         print(sorted(courses))
         if args.verbose:
             subprocess.check_output(['parallel', 'python', 'raw2latex.py',
-                                     '--verbose', '--course', ':::'] + courses)
+                                     '--verbose',
+                                     '--q_filter', ':::'] + courses)
         else:
             subprocess.check_output(['parallel', 'python', 'raw2latex.py',
-                                     '--course', ':::'] + courses)
+                                     '--q_filter', ':::'] + courses)
 
     df['location'] = df['URL'].apply(file_loc_from_question_url)
     df = df[df.URL.str.contains(args.q_filter, regex=False)]

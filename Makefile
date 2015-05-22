@@ -53,7 +53,7 @@ raw_json: wiki2json.py helpers.py
 
 ## add_latex: compiles raw mediawiki version to latex. Optional: ARGS="--verbose --q_filter=..."
 add_latex: raw2latex.py 
-	python $<
+	python $< $(ARGS)
 
 ## add2json: adds contributors, flags, topics, votes and html to json files. Optional: ARGS="--verbose --q_filter=..."
 add2json: add2json.py

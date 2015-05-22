@@ -74,11 +74,14 @@ def grab_raw(df):
         course = row.course
         year = int(row.exam[-4:])
         term = row.exam[:-5]
+        term_year = '%s_%d' % (term, year)
         url = row.URL
         num_hints = row.num_hints
         num_sols = row.num_sols
         loc = row.location
-        question = row.question
+        ID = url2questionID(url)
+        number = ID.split('+')[-1]
+        number_human = row.question
         statement_raw = get_content(url, 'Statement')
         statement_raw = statement_raw.strip()
         handleImages(statement_raw, loc)
@@ -112,15 +115,20 @@ def grab_raw(df):
             solutions_raw.append('No content found.')
         solutions_raw = [s.strip() for s in solutions_raw]
 
-        question_json = {"course": course,
-                         "year": int(year),
-                         "term": term,
-                         "url": url,
-                         "statement_raw": statement_raw,
-                         "hints_raw": hints_raw,
-                         "sols_raw": solutions_raw,
-                         "question": question,
-                         "ID": url2questionID(url)
+        question_json = {'course': course,
+                         'year': int(year),
+                         'term': term,
+                         'term_year': term_year,
+                         'url': url,
+                         'statement_raw': statement_raw,
+                         'hints_raw': hints_raw,
+                         'sols_raw': solutions_raw,
+                         'ID': ID,
+                         'number': number,
+                         'number_human': number_human,
+                         # question is deprecated. Please remove with next
+                         # commit.
+                         'question': number_human
                          }
 
         where_to_save = loc
@@ -141,7 +149,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--write_all', dest='write_all', action='store_true',
                         help='''Completely re-write all question content.
-                             Default: only update most recent changes.''')
+                             Defaul': only update most recent changes.''')
     parser.set_defaults(write_all=False)
 
     args = parser.parse_args()
