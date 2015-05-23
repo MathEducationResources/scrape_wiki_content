@@ -77,17 +77,12 @@ def votes2json(df, verbose=False):
         ratings_5 = [(int(r) - 1) / 20 + 1 for r in group["rating"].values]
         rating = np.mean(ratings_5)
         num_votes = len(ratings_5)
-        userIDs = group["userID"].values
-        times = group["time"].values
-        votes = zip(ratings_5, userIDs, times)
-        votes = sorted(votes, key=lambda x: x[2])
         if os.path.exists(location):
             with open(location, 'r') as f:
                 data = json.loads(f.read())
 
             data['rating'] = rating
             data['num_votes'] = num_votes
-            data['votes'] = votes
 
             with open(location, "w") as outfile:
                 json.dump(data, outfile, indent=4, sort_keys=True)
